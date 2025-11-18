@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Lod a odvozene tridy pro souboj.
+Lod a odvozene tridy pro vesmirny souboj.
 '''
 
 class Lod:
@@ -9,7 +9,7 @@ class Lod:
     Zakladni trida reprezentujici lod.
     '''
 
-    def __init__(self, jmeno, trup, utok, stit, kostka):
+    def __init__(self, jmeno, trup, utok, stit, kostka): #kontruktor
         self._jmeno = jmeno
         self._trup = trup
         self._max_trup = trup
@@ -18,18 +18,21 @@ class Lod:
         self._kostka = kostka
         self._zprava = ''
     
-    def __str__(self):
+    def __str__(self): #textová reprezentace lodě
         return str(self._jmeno)
-    
+
     def je_operacni(self):
         return self._trup > 0
 
-    def graficky_trup(self):
+    def graficky_ukazatel(self, aktualni_hodnota, max_hodnota):
         celkem = 20
-        pocet  = int(self._trup / self._max_trup * celkem)
+        pocet  = int(aktualni_hodnota / max_hodnota * celkem)
         if pocet == 0 and self.je_operacni():
             pocet = 1
         return f"[{'#'*pocet}{' '*(celkem-pocet)}]"
+
+    def graficky_trup(self):
+        return self.graficky_ukazatel(self._trup, self._max_trup)
 
     def utoc(self, souper):
         uder = self._utok + self._kostka.hod()
@@ -55,7 +58,6 @@ class Lod:
     def vypis_zpravu(self):
         return self._zprava
 
-
 class Stihac(Lod):
     """
     Odvozena trida, ktera pridava energii pro laserovy vyboj.
@@ -77,3 +79,20 @@ class Stihac(Lod):
             self.nastav_zpravu(f'{self._jmeno} utoci LASERem o sile {uder} hp.')
             self._energie = 0
             souper.bran_se(uder)
+
+    def graficka_energie(self):
+        return self.graficky_ukazatel(self._energie, self._max_energie)
+
+class Korveta(Lod):
+
+    def bran_se(self, uder):
+        poskozeni = uder - (self._stit + self._kostka.hod() + 4)
+        if poskozeni > 0:
+            zprava = f'{self._jmeno} utrpela zasah o sile {poskozeni} hp.'
+            self._trup -= poskozeni
+            if self._trup < 0:
+                self._trup = 0
+                zprava = f'{zprava[:-1]} a byla znicena.'
+        else:
+            zprava = f'{self._jmeno} odrazil utok výtažnými štity.'
+        self.nastav_zpravu(zprava)
