@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 from kostka import Kostka 
-from lod import Lod 
-import random
+from lod import Lod, Stihac
 
 class Sektor:
     """
-    Sprava souboje dvou lodí:
+    Správa souboje dvou lodí
     """
 
     def __init__(self, lod_1, lod_2, kostka, jmeno="bez nazvu"):
@@ -22,28 +21,31 @@ class Sektor:
             _subprocess.call(['cmd.exe', '/C', 'cls'])
         else:
             _subprocess.call(['clear'])
-
+        
     def _vypis_lod(self, lod):
         print(lod)
-        print(f'Trup: {lod._trup}\n')
+        print(f'Trup: {lod.graficky_trup()}')
 
     def _vykresli(self):
         self._vycisti()
-        print(f'============== {self._jmeno} ==============\n')
-        print('Lodě:')
+        print(f'================ Sektor {self._jmeno} ================\n')
+        print('Lodě:\n')
         self._vypis_lod(self._lod_1)
         self._vypis_lod(self._lod_2)
         print()
 
+
     def souboj(self):
-        print(f"Vítej v sektoru {self._jmeno}!")
-        print ("============================")
-        print(f"Dnes se utkají lodě:")
+        print(f"Vitej v sektoru {self._jmeno}!")
+        print("======================")
+        print()
+        print(f"Dnes se utkaji lode:")
         self._vypis_lod(self._lod_1)
         self._vypis_lod(self._lod_2)
-        print("Zahájit soubor...")
+        print("Zahajit souboj...")
         input()
 
+        import random
         if random.randint(0, 1):
             self._lod_1, self._lod_2 = self._lod_2, self._lod_1
 
@@ -59,19 +61,23 @@ class Sektor:
                 self._vypis_zpravu(self._lod_2.vypis_zpravu())
                 self._vypis_zpravu(self._lod_1.vypis_zpravu())
 
+
     def _vypis_zpravu(self, zprava):
         import time as _time
         if zprava:
             print(zprava)
-            _time.sleep(1.5)
+            _time.sleep(0.8)
 
 if __name__ == '__main__':
     k = Kostka(10)
-    lodicka = Lod("Velká bárka", trup=100, utok=70, stit=40, kostka=k)
-    clun = Lod ("Křehká bárka", 140, 35, 30, k)
-    barka = Lod("Plachetnice", 120, 40, 50, k)
-    pole = Sektor(lodicka, clun, k, "Bojové pole")
-    gamma = Sektor(lodicka, barka, k, "Gamma")
+    lodicka = Lod("Queen Marry", 100, 80, 50, k)
+    clun = Lod("Gumotex", 140, 20, 30, k)
+    l = Lod("Yachta", kostka=k, trup=80, utok=60, stit=70)
+    fighter = Stihac("Killer", 90, 50, 60, k, 30, 90)
+    
+    orion = Sektor(lodicka, fighter, k, "Orion")
+    # dodelat aby se do dalsiho sektoru propsala jen ta ktera prezila minuly
+    gamma = Sektor(lodicka, l, k, "Gamma")
 
-    pole.souboj()
+    orion.souboj()
     gamma.souboj()
