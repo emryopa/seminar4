@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import csv
 import argparse
 from dataclasses import dataclass
@@ -88,6 +90,7 @@ def main():
     parser = parse_args()
     args = parser.parse_args()
     app = AuroraApp(args)
+    #print(app.args)
     app.run()
 
 if __name__ == '__main__':
